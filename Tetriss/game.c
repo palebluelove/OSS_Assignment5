@@ -69,7 +69,7 @@ void DrawGameboard()
 		}
 	}
 
-	for (x = 1; x < 2 * (GBOARD_WIDTH + 1); x++) {
+	for (x = 1; x < 2 * (GBOARD_WIDTH + 1) - 1; x++) {
 		SetCurrentCursorPos(GBOARD_ORIGIN_X + x, GBOARD_ORIGIN_Y + GBOARD_HEIGHT);
 
 		printf("-");

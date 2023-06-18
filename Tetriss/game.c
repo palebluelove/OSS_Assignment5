@@ -21,6 +21,18 @@ void SetCurrentCursorPos(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), position);
 }//현재 커서 위치 setter
 
+COORD GetCurrentCursorPos()
+{
+	COORD curPoint;
+	CONSOLE_SCREEN_BUFFER_INFO curInfo;
+
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &curInfo);
+	curPoint.X = curInfo.dwCursorPosition.X;
+	curPoint.Y = curInfo.dwCursorPosition.Y;
+
+	return curPoint;
+}//현재 커서 위치 getter
+
 void RemoveCursor()
 {
 	CONSOLE_CURSOR_INFO curInfo;
@@ -57,7 +69,7 @@ void DrawGameboard()
 		}
 	}
 
-	for (x = 1; x < 2 * (GBOARD_WIDTH + 1); x++) {
+	for (x = 1; x < 2 * (GBOARD_WIDTH + 1) - 1; x++) {
 		SetCurrentCursorPos(GBOARD_ORIGIN_X + x, GBOARD_ORIGIN_Y + GBOARD_HEIGHT);
 
 		printf("-");

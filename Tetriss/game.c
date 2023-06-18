@@ -293,6 +293,14 @@ void RemoveFillUpLine(int* cnt) {
 
 }//한 칸 채우면 삭제
 
+int IsGameOver(COORD* curPos)
+{
+	if (!DetectCollision(curPos->X, curPos->Y, blockModel[block_id])) {
+		return 1;
+	}
+	return 0;
+}
+
 int main()
 {
 	COORD curPos;
@@ -317,9 +325,13 @@ int main()
 		curPos = GetCurrentCursorPos();
 		srand((unsigned int)time(NULL));
 		block_id = (rand() % 7) * 4;
-		
+		if (IsGameOver(&curPos) == 1) {
+			printf("GAME OVER");
+			break;
+		}
 		ShowBlock(blockModel[block_id]);
-
+		SetCurrentCursorPos(30, 11);
+		printf("Score : %d", cnt); //점수판
 		while (1) {
 			stop = BlockDown(&curPos);
 			if (stop == 0) {
@@ -330,6 +342,7 @@ int main()
 			ProcessKeyInput(&curPos);
 		}
 		SetCurrentCursorPos(30, 11);
+		printf("Score : %d", cnt);
 	}
 	return 0;
 }

@@ -1,4 +1,3 @@
 ﻿  game.c
-C:\Users\vango\source\repos\Tetriss\Tetriss\game.c(69,8): warning C4101: 'curPos' :참조되지 않은 지역 변수입니다.
-C:\Users\vango\source\repos\Tetriss\Tetriss\game.c(72,6): warning C4101: 'stop' :참조되지 않은 지역 변수입니다.
+C:\Users\vango\source\repos\Tetriss\Tetriss\game.c(100,6): warning C4101: 'stop' :참조되지 않은 지역 변수입니다.
   Tetriss.vcxproj -> C:\Users\vango\source\repos\Tetriss\x64\Debug\Tetriss.exe

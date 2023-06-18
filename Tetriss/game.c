@@ -21,6 +21,18 @@ void SetCurrentCursorPos(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), position);
 }//현재 커서 위치 setter
 
+COORD GetCurrentCursorPos()
+{
+	COORD curPoint;
+	CONSOLE_SCREEN_BUFFER_INFO curInfo;
+
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &curInfo);
+	curPoint.X = curInfo.dwCursorPosition.X;
+	curPoint.Y = curInfo.dwCursorPosition.Y;
+
+	return curPoint;
+}//현재 커서 위치 getter
+
 void RemoveCursor()
 {
 	CONSOLE_CURSOR_INFO curInfo;
@@ -64,6 +76,22 @@ void DrawGameboard()
 	}
 }//콘솔 창에서 그려지는 게임보드 출력
 
+void ShowBlock(char blockInfo[4][4])
+{
+	int x, y;
+	COORD curPos = GetCurrentCursorPos();
+
+	for (y = 0; y < 4; y++) {
+		for (x = 0; x < 4; x++) {
+			SetCurrentCursorPos(curPos.X + (x * 2), curPos.Y + y);
+			if (blockInfo[y][x] == 1) {
+				printf("■");
+			}
+		}
+	}
+	SetCurrentCursorPos(curPos.X, curPos.Y);
+}//전달된 block info 에 맞게 block 출력
+
 int main()
 {
 	COORD curPos;
@@ -83,6 +111,13 @@ int main()
 	RemoveCursor();
 
 	DrawGameboard();
-
+	while (1) {
+		SetCurrentCursorPos(12, 2);
+		curPos = GetCurrentCursorPos();
+		srand((unsigned int)time(NULL));
+		block_id = (rand() % 7) * 4;
+		
+		ShowBlock(blockModel[block_id]);
+	}
 	return 0;
 }

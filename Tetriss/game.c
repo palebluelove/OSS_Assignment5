@@ -6,6 +6,11 @@
 #include<string.h>
 #include"block.h"
 
+#define LEFT 75
+#define RIGHT 77
+#define UP 72
+#define DOWN 80
+#define SPACE 32
 #define GBOARD_ORIGIN_X 4
 #define GBOARD_ORIGIN_Y 2
 #define GBOARD_WIDTH 10
@@ -123,6 +128,97 @@ int BlockDown(COORD* curPos)
 	return 0;
 }//반환값의 이유 : 바닥면과 충돌이 일어났다면 이동을 멈추고 블록을 게임보드에 그려야 한다.
 
+void ShiftRight(COORD* curPos)
+{
+	if (!DetectCollision(curPos->X + 2, curPos->Y, blockModel[block_id])) {
+		return;
+	}//오른쪽으로 한 칸 옮겼을 때 충돌이 일어난다면?
+	DeleteBlock(blockModel[block_id]);
+	curPos->X += 2;
+	SetCurrentCursorPos(curPos->X, curPos->Y);
+	ShowBlock(blockModel[block_id]);
+}
+
+void ShiftLeft(COORD* curPos)
+{
+	if (!DetectCollision(curPos->X - 2, curPos->Y, blockModel[block_id])) {
+		return;
+	}
+	DeleteBlock(blockModel[block_id]);
+	curPos->X -= 2;
+	SetCurrentCursorPos(curPos->X, curPos->Y);
+	ShowBlock(blockModel[block_id]);
+}
+
+void BlockUp(COORD* curPos)
+{
+	DeleteBlock(blockModel[block_id]);
+	curPos->Y -= 1;
+	SetCurrentCursorPos(curPos->X, curPos->Y);
+	ShowBlock(blockModel[block_id]);
+}
+
+void RotateBlock()
+{
+	int block_senior = block_id - block_id % 4;;
+	int block_rotated = block_senior + (block_id + 1) % 4;
+	COORD curPos = GetCurrentCursorPos();
+	if (!DetectCollision(curPos.X, curPos.Y, blockModel[block_rotated])) {
+		return 0;
+	}//충돌이 일어난다면 회전 불가
+	DeleteBlock(blockModel[block_id]);
+	block_id = block_rotated;
+	ShowBlock(blockModel[block_id]);
+}//블록 회전시키기
+
+void ReverseRotateBlock()
+{
+	int block_senior = block_id - block_id % 4;
+
+	DeleteBlock(blockModel[block_id]);
+
+	block_id = block_senior + (4 + block_id - 1) % 4;
+
+	ShowBlock(blockModel[block_id]);
+
+}
+
+void SpaceDown(COORD* curPos) {
+
+	while (BlockDown(curPos));
+
+}//블록이 바닥에 충돌할 때까지 BlockDown 함수 실행
+
+void ProcessKeyInput(COORD* curPos)
+{
+
+	int key;
+	int i;
+
+	for (i = 0; i < 20; i++) {
+		if (_kbhit() != 0) {
+			key = _getch();
+			switch (key) {
+			case LEFT:
+				ShiftLeft(curPos);
+				break;
+			case RIGHT:
+				ShiftRight(curPos);
+				break;
+			case UP:
+				RotateBlock();
+				break;
+			case SPACE:
+				SpaceDown(curPos);
+				break;
+			default:
+				break;
+			}
+		}
+		Sleep(speed);
+	}
+}//사용자 입력에 대한 명령어 처리
+
 int DetectCollision(int posX, int posY, char blockModel[4][4])
 {
 	int x, y;
@@ -231,7 +327,9 @@ int main()
 				RemoveFillUpLine(&cnt);
 				break;
 			}
+			ProcessKeyInput(&curPos);
 		}
+		SetCurrentCursorPos(30, 11);
 	}
 	return 0;
 }
